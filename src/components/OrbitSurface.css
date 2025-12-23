@@ -1,17 +1,6 @@
 /**
  * Orbit Surface
- *
- * Visual Rules (from spec):
- * - No lists, no checkboxes, no numbers
- * - Opacity + proximity signal relevance
- * - Hover = details
- * - Click = single action
- * - Motion is slow, predictable, optional
- *
- * Interactions:
- * - Click = acknowledge
- * - Double-click = quiet for now
- * - / = add to orbit
+ * Bigger orbits, more interactivity, visible center
  */
 
 .surface {
@@ -27,57 +16,87 @@
   position: relative;
 }
 
-/* Context label - barely visible */
+/* Context toggle */
 .place {
   position: fixed;
   top: 24px;
   left: 24px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.3);
   cursor: pointer;
   text-transform: lowercase;
   letter-spacing: 0.05em;
-  transition: color 0.3s;
+  padding: 8px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  transition: all 0.2s ease;
 }
 
 .place:hover {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
 }
 
-/* Center dot - pulses slowly */
+/* Item count */
+.count {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.2);
+  letter-spacing: 0.05em;
+}
+
+/* CENTER - BIGGER, more visible pulse */
 .center {
   position: absolute;
-  width: 8px;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.5);
+  width: 24px;
+  height: 24px;
+  background: radial-gradient(circle, #6366f1 0%, #4f46e5 100%);
   border-radius: 50%;
-  animation: pulse 6s ease-in-out infinite;
+  animation: pulse 4s ease-in-out infinite;
+  box-shadow:
+    0 0 40px 10px rgba(99, 102, 241, 0.3),
+    0 0 80px 20px rgba(99, 102, 241, 0.15),
+    0 0 120px 40px rgba(99, 102, 241, 0.05);
 }
 
 @keyframes pulse {
   0%, 100% {
     transform: scale(1);
-    opacity: 0.5;
-    box-shadow: 0 0 30px 8px rgba(129, 140, 248, 0.2);
+    box-shadow:
+      0 0 40px 10px rgba(99, 102, 241, 0.3),
+      0 0 80px 20px rgba(99, 102, 241, 0.15),
+      0 0 120px 40px rgba(99, 102, 241, 0.05);
   }
   50% {
-    transform: scale(1.2);
-    opacity: 0.7;
-    box-shadow: 0 0 50px 12px rgba(129, 140, 248, 0.3);
+    transform: scale(1.15);
+    box-shadow:
+      0 0 60px 15px rgba(99, 102, 241, 0.4),
+      0 0 100px 30px rgba(99, 102, 241, 0.2),
+      0 0 140px 50px rgba(99, 102, 241, 0.08);
   }
 }
 
-/* Orbit item - drifts lazily */
+/* Orbit item - drifts lazily, BIGGER radius */
 .item {
   position: absolute;
   left: 50%;
   top: 50%;
   cursor: pointer;
   opacity: var(--opacity, 0.5);
-  transition: opacity 0.4s ease;
-  animation: drift 120s ease-in-out infinite;
+  transition: opacity 0.3s ease;
+  animation: drift 100s ease-in-out infinite;
   animation-delay: var(--delay, 0s);
+  z-index: 1;
+}
+
+.item.hovered,
+.item.expanded {
+  opacity: 1;
+  z-index: 10;
 }
 
 @keyframes drift {
@@ -85,116 +104,197 @@
     transform:
       rotate(calc(var(--angle) + 0deg))
       translateX(var(--distance))
-      scaleY(var(--ellipse, 0.9))
       rotate(calc(-1 * (var(--angle) + 0deg)));
-  }
-  25% {
-    transform:
-      rotate(calc(var(--angle) + 90deg))
-      translateX(calc(var(--distance) * 1.05))
-      scaleY(var(--ellipse, 0.9))
-      rotate(calc(-1 * (var(--angle) + 90deg)));
   }
   50% {
     transform:
       rotate(calc(var(--angle) + 180deg))
       translateX(var(--distance))
-      scaleY(var(--ellipse, 0.9))
       rotate(calc(-1 * (var(--angle) + 180deg)));
-  }
-  75% {
-    transform:
-      rotate(calc(var(--angle) + 270deg))
-      translateX(calc(var(--distance) * 0.95))
-      scaleY(var(--ellipse, 0.9))
-      rotate(calc(-1 * (var(--angle) + 270deg)));
   }
   100% {
     transform:
       rotate(calc(var(--angle) + 360deg))
       translateX(var(--distance))
-      scaleY(var(--ellipse, 0.9))
       rotate(calc(-1 * (var(--angle) + 360deg)));
   }
 }
 
-.item:hover {
-  opacity: 1;
-}
-
-/* Item dot */
+/* Item dot - BIGGER, more glow on hover */
 .dot {
-  width: 10px;
-  height: 10px;
-  background: #818cf8;
+  width: 14px;
+  height: 14px;
+  background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
   border-radius: 50%;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 0 12px rgba(129, 140, 248, 0.4);
+  transition: all 0.25s ease;
+  box-shadow: 0 0 16px rgba(129, 140, 248, 0.5);
 }
 
-.item:hover .dot {
-  transform: scale(1.3);
-  box-shadow: 0 0 20px rgba(129, 140, 248, 0.6);
+.item.hovered .dot {
+  transform: scale(1.5);
+  box-shadow:
+    0 0 24px rgba(129, 140, 248, 0.7),
+    0 0 48px rgba(129, 140, 248, 0.3);
+}
+
+.item.expanded .dot {
+  transform: scale(1.4);
+  box-shadow:
+    0 0 30px rgba(129, 140, 248, 0.8),
+    0 0 60px rgba(129, 140, 248, 0.4);
 }
 
 .item.pinned .dot {
-  background: #fbbf24;
-  box-shadow: 0 0 12px rgba(251, 191, 36, 0.4);
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  box-shadow: 0 0 16px rgba(251, 191, 36, 0.5);
 }
 
-/* Label - appears on hover */
+.item.pinned.hovered .dot,
+.item.pinned.expanded .dot {
+  box-shadow:
+    0 0 24px rgba(251, 191, 36, 0.7),
+    0 0 48px rgba(251, 191, 36, 0.3);
+}
+
+/* Label */
 .label {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  top: 16px;
-  font-size: 12px;
+  top: 22px;
+  font-size: 13px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.9);
   white-space: nowrap;
   max-width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.label.visible {
+  opacity: 1;
+}
+
+/* Action buttons */
+.actions {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 44px;
+  display: flex;
+  gap: 2px;
+  background: rgba(22, 27, 34, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.actions button {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.actions button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.actions button.active {
+  color: #fbbf24;
+}
+
+.actions button.danger:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
+.actions button svg {
+  width: 16px;
+  height: 16px;
 }
 
 /* Empty state */
 .empty {
   position: absolute;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.15);
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.2);
   letter-spacing: 0.02em;
 }
 
-/* Input - minimal */
+/* Input */
 .add {
   position: fixed;
-  bottom: 28px;
+  bottom: 32px;
   left: 50%;
   transform: translateX(-50%);
 }
 
 .add input {
-  width: 240px;
-  padding: 12px 20px;
+  width: 280px;
+  padding: 14px 24px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 15px;
   color: rgba(255, 255, 255, 0.9);
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
   outline: none;
   text-align: center;
   transition: all 0.2s ease;
 }
 
 .add input::placeholder {
-  color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.2);
 }
 
 .add input:focus {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(129, 140, 248, 0.3);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+/* Toast notification */
+.toast {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(22, 27, 34, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  animation: toastIn 0.3s ease;
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 /* Reduced motion */
@@ -207,6 +307,9 @@
       rotate(calc(-1 * var(--angle)));
   }
   .center {
+    animation: none;
+  }
+  .toast {
     animation: none;
   }
 }
