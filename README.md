@@ -9,7 +9,7 @@ Instead of asking users to manage tasks, categories, or priorities, Orbit mainta
 
 Items never disappear. They simply move closer or farther away.
 
-# ✨ Why Orbit Exists
+## ✨ Why Orbit Exists
 
 Our attention is not hierarchical.
 It’s situational.
@@ -24,7 +24,7 @@ Orbit was designed for moments like:
 
 Orbit preserves mental continuity without demanding maintenance.
 
-# 🔄 How It Works
+## 🔄 How It Works
 
 - Users can add any number of items to their Orbit.
 - At any moment, only a small set (typically 3–5 items) is surfaced.
@@ -39,7 +39,7 @@ Orbit preserves mental continuity without demanding maintenance.
 Orbit doesn’t ask you to manage your attention.
 It just instinctively rotates toward it.
 
-# 🧠 Design Principles
+## 🧠 Design Principles
 
 - Context >>> categorization
 - Rotation >>> navigation
@@ -50,7 +50,7 @@ It just instinctively rotates toward it.
 
 If a feature increases cognitive load, it doesn’t belong.
 
-# 📦 Current Form Factors
+## 📦 Current Form Factors
 
 - Chrome New Tab (MVP)
 - Widget / Glanceable Surface (planned)
@@ -58,7 +58,7 @@ If a feature increases cognitive load, it doesn’t belong.
 
 Each surface shares the same philosophy: *be present without being demanding*.
 
-# 🛠 Status
+## 🛠 Status
 
 ![In Progress](img.shields.io)
 

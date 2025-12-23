@@ -1,33 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="utf-8">
+  <head>
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Orbit Animation</title>
-    <link href="styles.css" type="css">
-</head>
+    <link rel="stylesheet" href="styles.css" type="css" />
+  </head>
 
-<body>
+  <body>
     <div class="universe">
-        <div class="planet-center">
+      
+        <!-- Elliptical orbits using SVG -->
+      <svg
+        class="orbits"
+        viewBox="0 0 600 600"
+        preserveAspectRatio="xMidYMid meet"
+      >
+        <ellipse
+          cx="300"
+          cy="300"
+          rx="140"
+          ry="80"
+          stroke="rgba(255,255,255,0.1)"
+          fill="none"
+          stroke-width="1"
+        />
+        <ellipse
+          cx="300"
+          cy="300"
+          rx="180"
+          ry="100"
+          stroke="rgba(255,255,255,0.08)"
+          fill="none"
+          stroke-width="1"
+        />
+      </svg>
 
-        <!-- Teal planets orbiting -->
-        <div class="planet teal"></div>
-        <div class="planet teal"></div>
+      <!-- Central planet orbiting-->
+      <div class="planet-center"></div>
 
-        <!-- Yellow planet orbiting -->
-        <div class="planet yellow"></div>
-        
+      <!-- Teal planets orbiting -->
+      <div class="planet teal" style="animation-delay: 0s"></div>
+      <div class="planet teal" style="animation-delay: 1.5s"></div>
 
-        </div>
+      <!-- Yellow planet orbiting -->
+      <div class="planet yellow" style="animation-delay: 0s"></div>
     </div>
+  </body>
 
-</body>
-
-<footer>
-
-</footer>
-    <script src="scripts.js"></script>
-    <script src="https://unpkg.com/iframe-console-relay/dist/index.umd.min.js"></script>
+  <footer></footer>
+  <script src="scripts.js"></script>
 </html>
