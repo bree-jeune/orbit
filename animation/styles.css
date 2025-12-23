@@ -1,96 +1,18 @@
-:root {
-  --center-size: 80px;
-  --planet-size: 24px;
-  --planet-glow: 0 0 12px;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3D Interactive Orbit</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="container"></div>
 
-body {
-  background: radial-gradient(ellipse at center, #000015 0%, #000 100%);
-  margin: 0;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  font-family: "Arial", sans-serif;
-}
-
-.universe {
-  position: relative;
-  width: min(90vw, 600px);
-  height: min(90vw, 600px);
-}
-
-svg.orbits {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.planet-center {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: var(--center-size);
-  height: var(--center-size);
-  background: radial-gradient(circle at 30% 30%, #2e62ff, #000066);
-  border-radius: 50%;
-  box-shadow: 0 0 30px rgba(46, 98, 255, 0.8);
-  transform: translate(-50%, -50%);
-  animation: spin-center 10s linear infinite;
-  z-index: 2;
-}
-
-.planet {
-  position: absolute;
-  width: var(--planet-size);
-  height: var(--planet-size);
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  transform-origin: center center;
-}
-
-.teal {
-  background: radial-gradient(circle at 30% 30%, #00ffff, #008888);
-  box-shadow: var(--planet-glow) #00ffff;
-  animation: orbit-fast 5s linear infinite;
-}
-
-.yellow {
-  background: radial-gradient(circle at 30% 30%, #ffeb3b, #c9a000);
-  box-shadow: var(--planet-glow) #ffeb3b;
-  animation: orbit-slow 15s linear infinite;
-}
-
-/* SPIN center planet */
-@keyframes spin {
-  0% {
-    transform: translate(-50%, -50%) rotate(0deg);
-  }
-  100% {
-    transform: translate(-50%, -50%) rotate(360deg);
-  }
-}
-
-/* FAST teal orbit */
-@keyframes orbit-fast {
-  0% {
-    transform: rotate(0deg) translateX(140px);
-  }
-  100% {
-    transform: rotate(360deg) translateX(140px);
-  }
-}
-
-/* SLOW yellow orbit */
-@keyframes orbit-slow {
-  0% {
-    transform: rotate(0deg) translateX(180px);
-  }
-  100% {
-    transform: rotate(360deg) translateX(180px);
-  }
-}
+  <!-- THREE.JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.0/examples/js/controls/OrbitControls.js"></script>
+  
+  <script src="script.js"></script>
+</body>
+</html>
