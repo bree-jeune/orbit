@@ -1,6 +1,5 @@
-<script>
   // Create a new console instance
-  const console = new IFrameConsoleRelay({
+const console = new IFrameConsoleRelay({
     iframe: document.getElementById('iframe'),
     logLevel: 'debug',  // Fixed: Changed semicolon to comma
     // Add a listener for when the console is ready
@@ -13,4 +12,3 @@
       console.error('An error occurred:', error);
     }  // Fixed: Removed unnecessary comma after last property
   });
-</script>
