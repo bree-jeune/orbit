@@ -184,14 +184,15 @@
 }
 
 /* Item dot - base size 16px, grows with age via --size variable */
+/* Bioluminescent Teal/Cyan for default state */
 .dot {
   position: relative;
   width: var(--dot-size, 16px);
   height: var(--dot-size, 16px);
-  background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
+  background: linear-gradient(135deg, #4dd0e1 0%, #00e5ff 100%);
   border-radius: 50%;
   transition: all 0.25s ease;
-  box-shadow: 0 0 16px rgba(129, 140, 248, 0.5);
+  box-shadow: 0 0 16px rgba(0, 229, 255, 0.5);
 }
 
 /* Debris ring for aged items */
@@ -203,7 +204,7 @@
   width: var(--ring-size, 0px);
   height: var(--ring-size, 0px);
   transform: translate(-50%, -50%);
-  border: 1px solid rgba(129, 140, 248, 0.2);
+  border: 1px solid rgba(0, 229, 255, 0.25);
   border-radius: 50%;
   opacity: var(--ring-opacity, 0);
   animation: ring-pulse 3s ease-in-out infinite;
@@ -217,7 +218,7 @@
   width: calc(var(--ring-size, 0px) * 1.5);
   height: calc(var(--ring-size, 0px) * 1.5);
   transform: translate(-50%, -50%);
-  border: 1px dashed rgba(129, 140, 248, 0.1);
+  border: 1px dashed rgba(0, 229, 255, 0.15);
   border-radius: 50%;
   opacity: var(--ring-opacity, 0);
   animation: ring-pulse 4s ease-in-out infinite reverse;
@@ -231,27 +232,28 @@
 .item.hovered .dot {
   transform: scale(1.5);
   box-shadow:
-    0 0 24px rgba(129, 140, 248, 0.7),
-    0 0 48px rgba(129, 140, 248, 0.3);
+    0 0 24px rgba(0, 229, 255, 0.7),
+    0 0 48px rgba(0, 229, 255, 0.3);
 }
 
 .item.expanded .dot {
   transform: scale(1.4);
   box-shadow:
-    0 0 30px rgba(129, 140, 248, 0.8),
-    0 0 60px rgba(129, 140, 248, 0.4);
+    0 0 30px rgba(0, 229, 255, 0.8),
+    0 0 60px rgba(0, 229, 255, 0.4);
 }
 
+/* Soft Starlight Gold for pinned items */
 .item.pinned .dot {
-  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-  box-shadow: 0 0 16px rgba(251, 191, 36, 0.5);
+  background: linear-gradient(135deg, #ffe082 0%, #ffd54f 100%);
+  box-shadow: 0 0 16px rgba(255, 213, 79, 0.5);
 }
 
 .item.pinned.hovered .dot,
 .item.pinned.expanded .dot {
   box-shadow:
-    0 0 24px rgba(251, 191, 36, 0.7),
-    0 0 48px rgba(251, 191, 36, 0.3);
+    0 0 24px rgba(255, 213, 79, 0.7),
+    0 0 48px rgba(255, 213, 79, 0.3);
 }
 
 /* Label */

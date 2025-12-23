@@ -106,11 +106,16 @@ export const STORAGE_KEYS = {
 // =============================================================================
 
 export const COLORS = {
+  // Center planet - Deep Blue
   PRIMARY_LIGHT: '#3b82f6',   // Blue 500
   PRIMARY: '#1e40af',         // Blue 800
   PRIMARY_DARK: '#1e3a8a',    // Blue 900
-  ACCENT: '#818cf8',          // Indigo 400
-  ACCENT_DARK: '#6366f1',     // Indigo 500
+  // Orbiting planets - Bioluminescent Teal/Cyan
+  ORBIT_LIGHT: '#4dd0e1',     // Cyan 300
+  ORBIT: '#00e5ff',           // Cyan A400
+  // Pinned items - Soft Starlight Gold
+  PINNED_LIGHT: '#ffe082',    // Amber 200
+  PINNED: '#ffd54f',          // Amber 300
 };
 
 // =============================================================================
