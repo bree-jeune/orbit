@@ -73,6 +73,17 @@ export function computeRelevance(item, context) {
   score *= (1 - decay);
   if (decay > 0.3) reasons.push('fading from focus');
 
+  // Quiet - temporarily suppress items
+  if (item.signals.quietUntil) {
+    const quietUntil = new Date(item.signals.quietUntil).getTime();
+    const now = new Date(context.now).getTime();
+    if (now < quietUntil) {
+      // Item is quieted - heavily suppress score
+      score *= 0.1;
+      reasons.push('quieted');
+    }
+  }
+
   return {
     score: normalize(score),
     reasons,

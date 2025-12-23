@@ -122,6 +122,9 @@ export async function markSeen(id) {
   const context = getCurrentContext();
   const updated = recordInteraction(item, 'seen', context);
 
+  // Update local state first
+  state.items = state.items.map((i) => (i.id === id ? updated : i));
+
   await updateItem(id, updated);
   await recompute();
 }
@@ -136,6 +139,9 @@ export async function markOpened(id) {
 
   const context = getCurrentContext();
   const updated = recordInteraction(item, 'opened', context);
+
+  // Update local state first
+  state.items = state.items.map((i) => (i.id === id ? updated : i));
 
   await updateItem(id, updated);
   await recompute();
@@ -161,6 +167,9 @@ export async function quiet(id, hours = 4) {
   const context = getCurrentContext();
   const updated = quietItem(item, hours, context);
 
+  // Update local state first
+  state.items = state.items.map((i) => (i.id === id ? updated : i));
+
   await updateItem(id, updated);
   await recompute();
 }
@@ -174,6 +183,10 @@ export async function pin(id) {
   if (!item) return;
 
   const updated = pinItem(item);
+
+  // Update local state first
+  state.items = state.items.map((i) => (i.id === id ? updated : i));
+
   await updateItem(id, updated);
   await recompute();
 }
@@ -187,6 +200,10 @@ export async function unpin(id) {
   if (!item) return;
 
   const updated = unpinItem(item);
+
+  // Update local state first
+  state.items = state.items.map((i) => (i.id === id ? updated : i));
+
   await updateItem(id, updated);
   await recompute();
 }
