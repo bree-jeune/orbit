@@ -3,16 +3,11 @@
  *
  * Handles hover sounds, click sounds, and background music.
  * Music starts muted by preference and can be toggled.
+ * Features: debounced hover sounds, lazy-loaded ambient audio.
  */
 
 import { useRef, useCallback, useEffect, useState } from 'react';
-
-// Sound file paths
-const SOUNDS = {
-  hover: '/sounds/envato_sfxgen_Dec_23_2025_9_59_33.mp3',
-  click: '/sounds/envato_sfxgen_Dec_23_2025_10_01_03.mp3',
-  ambient: '/sounds/Space Ambience.mp3',
-};
+import { AUDIO, STORAGE_KEYS } from '../config/constants.js';
 
 /**
  * Audio manager hook
@@ -22,31 +17,26 @@ export function useAudio() {
   const hoverRef = useRef(null);
   const clickRef = useRef(null);
   const ambientRef = useRef(null);
+  const lastHoverTime = useRef(0);
+  const ambientLoaded = useRef(false);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
 
-  // Initialize audio elements
+  // Initialize SFX audio elements (small files, load immediately)
   useEffect(() => {
     // Hover sound - quiet, subtle
-    hoverRef.current = new Audio(SOUNDS.hover);
-    hoverRef.current.volume = 0.15;
+    hoverRef.current = new Audio(AUDIO.SOUNDS.hover);
+    hoverRef.current.volume = AUDIO.VOLUMES.hover;
     hoverRef.current.preload = 'auto';
 
     // Click sound - slightly louder
-    clickRef.current = new Audio(SOUNDS.click);
-    clickRef.current.volume = 0.25;
+    clickRef.current = new Audio(AUDIO.SOUNDS.click);
+    clickRef.current.volume = AUDIO.VOLUMES.click;
     clickRef.current.preload = 'auto';
 
-    // Ambient music - low volume, loops
-    ambientRef.current = new Audio(SOUNDS.ambient);
-    ambientRef.current.volume = 0.1;
-    ambientRef.current.loop = true;
-    ambientRef.current.preload = 'auto';
-
-    // Check saved preference
-    const musicPref = localStorage.getItem('orbit_music');
+    // Check if ambient should auto-play (don't load until needed)
+    const musicPref = localStorage.getItem(STORAGE_KEYS.MUSIC_PREF);
     if (musicPref === 'on') {
-      ambientRef.current.play().catch(() => {});
-      setIsMusicPlaying(true);
+      loadAndPlayAmbient();
     }
 
     return () => {
@@ -56,7 +46,24 @@ export function useAudio() {
     };
   }, []);
 
+  // Lazy load ambient audio (3MB+ file)
+  const loadAndPlayAmbient = useCallback(() => {
+    if (!ambientLoaded.current) {
+      ambientRef.current = new Audio(AUDIO.SOUNDS.ambient);
+      ambientRef.current.volume = AUDIO.VOLUMES.ambient;
+      ambientRef.current.loop = true;
+      ambientLoaded.current = true;
+    }
+    ambientRef.current.play().catch(() => {});
+    setIsMusicPlaying(true);
+  }, []);
+
+  // Debounced hover sound
   const playHover = useCallback(() => {
+    const now = Date.now();
+    if (now - lastHoverTime.current < AUDIO.DEBOUNCE_MS) return;
+    lastHoverTime.current = now;
+
     if (hoverRef.current) {
       hoverRef.current.currentTime = 0;
       hoverRef.current.play().catch(() => {});
@@ -71,18 +78,15 @@ export function useAudio() {
   }, []);
 
   const toggleMusic = useCallback(() => {
-    if (!ambientRef.current) return;
-
     if (isMusicPlaying) {
-      ambientRef.current.pause();
-      localStorage.setItem('orbit_music', 'off');
+      ambientRef.current?.pause();
+      localStorage.setItem(STORAGE_KEYS.MUSIC_PREF, 'off');
       setIsMusicPlaying(false);
     } else {
-      ambientRef.current.play().catch(() => {});
-      localStorage.setItem('orbit_music', 'on');
-      setIsMusicPlaying(true);
+      loadAndPlayAmbient();
+      localStorage.setItem(STORAGE_KEYS.MUSIC_PREF, 'on');
     }
-  }, [isMusicPlaying]);
+  }, [isMusicPlaying, loadAndPlayAmbient]);
 
   return {
     playHover,

@@ -7,6 +7,8 @@
  * Velocity = how fast relevance is changing
  */
 
+import { ITEM_DEFAULTS, STORAGE_KEYS } from '../config/constants.js';
+
 /**
  * @typedef {Object} OrbitContext
  * @property {string} now - ISO timestamp
@@ -44,9 +46,9 @@
  * @property {string[]} [computed.reasons] - why this score
  */
 
+// Re-export for backward compatibility, add score bounds
 export const DEFAULTS = {
-  MAX_VISIBLE: 5,
-  DECAY_DAYS: 7,
+  ...ITEM_DEFAULTS,
   MIN_SCORE: 0,
   MAX_SCORE: 1,
 };
@@ -101,7 +103,7 @@ export function getCurrentContext() {
   }
 
   // Place defaults to unknown - user can set manually
-  const place = localStorage.getItem('orbit_place') || 'unknown';
+  const place = localStorage.getItem(STORAGE_KEYS.CONTEXT) || 'unknown';
 
   return {
     now: now.toISOString(),

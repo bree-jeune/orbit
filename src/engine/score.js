@@ -5,18 +5,10 @@
  * Each signal contributes weight, not rules.
  */
 
-import { DEFAULTS } from './types.js';
+import { SCORING_WEIGHTS, ITEM_DEFAULTS } from '../config/constants.js';
 
-// Weight configuration - tune these
-const WEIGHTS = {
-  TIME: 0.20,
-  PLACE: 0.15,
-  DEVICE: 0.10,
-  RECENCY: 0.25,
-  FREQUENCY: 0.15,
-  PINNED: 0.10,
-  NOVELTY: 0.05,
-};
+// Use centralized weights
+const WEIGHTS = SCORING_WEIGHTS;
 
 /**
  * Compute relevance score for an item given current context
@@ -142,7 +134,7 @@ function computeRecencyBoost(item, context) {
   const ageDays = ageMs / (1000 * 60 * 60 * 24);
 
   // Exponential decay over DECAY_DAYS
-  return Math.exp(-ageDays / DEFAULTS.DECAY_DAYS);
+  return Math.exp(-ageDays / ITEM_DEFAULTS.DECAY_DAYS);
 }
 
 /**
@@ -193,7 +185,7 @@ function computeDecay(item, context) {
  * Clamp score to 0-1
  */
 function normalize(score) {
-  return Math.max(DEFAULTS.MIN_SCORE, Math.min(DEFAULTS.MAX_SCORE, score));
+  return Math.max(0, Math.min(1, score));
 }
 
 /**

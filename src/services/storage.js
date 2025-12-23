@@ -5,7 +5,9 @@
  * Zero auth in v1
  */
 
-const STORAGE_KEY = 'orbit_items';
+import { STORAGE_KEYS, ITEM_DEFAULTS } from '../config/constants.js';
+
+const STORAGE_KEY = STORAGE_KEYS.ITEMS;
 const SETTINGS_KEY = 'orbit_settings';
 
 /**
@@ -132,7 +134,7 @@ export async function saveSettings(settings) {
 
 function defaultSettings() {
   return {
-    maxVisible: 5,
+    maxVisible: ITEM_DEFAULTS.MAX_VISIBLE,
     place: 'unknown',
     theme: 'dark',
   };
