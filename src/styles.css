@@ -1,34 +1,15 @@
-html, body, #root {
+/* Global Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html, body, #root {
   width: 100%;
   height: 100%;
-  background: #000;
-}
-
-.appContainer {
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-
-.uiControls {
-  position: absolute;
-  bottom: 16px;
-  left: 16px;
-  display: flex;
-  gap: 8px;
-}
-
-button {
-  padding: 8px 12px;
-  font-size: 16px;
-  background: #222;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #444;
+  background: #0a0e21;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

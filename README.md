@@ -58,9 +58,58 @@ If a feature increases cognitive load, it doesn’t belong.
 
 Each surface shares the same philosophy: *be present without being demanding*.
 
-## 🛠 Status
+## Repo Structure
 
-![In Progress](img.shields.io)
+```
+orbit/
+├── src/
+│   ├── engine/           # Core algorithm
+│   │   ├── types.js      # Data models
+│   │   ├── score.js      # Relevance scoring
+│   │   └── rank.js       # Ranking + interactions
+│   ├── store/            # State management
+│   │   └── orbitStore.js
+│   ├── services/         # Storage abstraction
+│   │   └── storage.js
+│   ├── components/       # UI components
+│   │   ├── OrbitSurface.js
+│   │   └── OrbitSurface.css
+│   ├── App.js
+│   ├── index.js
+│   └── styles.css
+├── extension/            # Chrome extension
+│   └── manifest.json
+├── public/
+│   └── index.html
+├── package.json
+└── webpack.config.js
+```
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm start
+
+# Build for production
+npm run build
+
+# Build Chrome extension
+npm run build:extension
+```
+
+## Chrome Extension
+
+1. Run `npm run build:extension`
+2. Open `chrome://extensions/`
+3. Enable "Developer mode"
+4. Click "Load unpacked"
+5. Select the `extension/` folder
+
+## Status
 
 Orbit is an active experiment in human-centered system design, accessibility, and intentional engineering.
 

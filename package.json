@@ -1,16 +1,15 @@
 {
   "name": "orbit",
   "version": "1.0.0",
+  "description": "Context-aware attention surface",
   "scripts": {
-    "start": "npx webpack serve --open",
-    "build": "webpack --mode production"
+    "start": "webpack serve --open --mode development",
+    "build": "webpack --mode production",
+    "build:extension": "webpack --mode production && cp -r dist/* extension/"
   },
   "dependencies": {
-    "@react-three/drei": "^10.7.7",
-    "@react-three/fiber": "^9.4.2",
     "react": "^19.2.3",
-    "react-dom": "^19.2.3",
-    "three": "^0.182.0"
+    "react-dom": "^19.2.3"
   },
   "devDependencies": {
     "@babel/core": "^7.23.0",
