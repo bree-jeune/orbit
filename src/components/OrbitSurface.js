@@ -177,13 +177,7 @@ export default function OrbitSurface() {
         <Walkthrough onComplete={handleWalkthroughComplete} />
       )}
 
-      {/* Branding */}
-      <div className="brand">
-        <div className="brand-icon" />
-        <span>orbit</span>
-      </div>
-
-      {/* Mode selector with add button */}
+      {/* Mode selector with branding */}
       <ModeSelector
         currentMode={context?.place || 'home'}
         onModeChange={handleModeChange}

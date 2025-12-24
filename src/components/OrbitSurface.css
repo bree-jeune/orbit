@@ -16,12 +16,8 @@
   position: relative;
 }
 
-/* Branding */
+/* Branding - integrated with mode selector */
 .brand {
-  position: fixed;
-  top: 24px;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -30,6 +26,9 @@
   color: rgba(255, 255, 255, 0.4);
   letter-spacing: 0.1em;
   text-transform: lowercase;
+  padding-right: 12px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  margin-right: 8px;
 }
 
 .brand-icon {
@@ -511,6 +510,8 @@
   top: 24px;
   left: 24px;
   z-index: 100;
+  display: flex;
+  align-items: center;
 }
 
 .mode-pills {
@@ -860,5 +861,53 @@
   50% {
     transform: scale(1.3);
     box-shadow: 0 0 30px rgba(0, 229, 255, 0.8), 0 0 60px rgba(0, 229, 255, 0.4);
+  }
+}
+
+/* =============================================================================
+   MODE DELETE
+   ============================================================================= */
+
+.mode-pill-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.mode-delete-btn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ef4444;
+  border: none;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  animation: popIn 0.15s ease;
+  z-index: 10;
+}
+
+.mode-delete-btn:hover {
+  background: #dc2626;
+  transform: scale(1.1);
+}
+
+.mode-delete-btn svg {
+  width: 12px;
+  height: 12px;
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
   }
 }
