@@ -88,7 +88,7 @@ export default function OrbitSurface() {
       // Find items older than threshold that need attention
       const oldItems = state.items.filter((item) => {
         if (item.signals?.isRemoved || item.signals?.isPinned) return false;
-        const ageHours = (now - item.createdAt) / (1000 * 60 * 60);
+        const ageHours = (now - new Date(item.signals.createdAt).getTime()) / (1000 * 60 * 60);
         return ageHours >= AUDIO.REMINDER_AGE_HOURS;
       });
 
