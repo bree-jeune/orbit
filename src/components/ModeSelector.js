@@ -121,7 +121,11 @@ export default function ModeSelector({ currentMode, onModeChange, onModeSwitch }
   };
 
   return (
-    <div className="mode-selector" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="mode-selector"
+      style={{ position: 'fixed', top: '24px', left: '24px', zIndex: 100 }}
+      onClick={(e) => e.stopPropagation()}
+    >
       {/* Branding */}
       <div className="brand">
         <div className="brand-icon" />
