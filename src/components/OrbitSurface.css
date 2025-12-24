@@ -1,0 +1,864 @@
+/**
+ * Orbit Surface
+ * Bigger orbits, more interactivity, visible center
+ */
+
+.surface {
+  width: 100vw;
+  height: 100vh;
+  background: #0d1117;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif;
+  color: rgba(255, 255, 255, 0.9);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Branding */
+.brand {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.1em;
+  text-transform: lowercase;
+}
+
+.brand-icon {
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle, #3b82f6 0%, #1e40af 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
+}
+
+/* Context toggle */
+.place {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  text-transform: lowercase;
+  letter-spacing: 0.05em;
+  padding: 8px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  transition: all 0.2s ease;
+}
+
+.place:hover {
+  color: rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Item count */
+.count {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.2);
+  letter-spacing: 0.05em;
+}
+
+/* Music toggle */
+.music-toggle {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.music-toggle:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.music-toggle.playing {
+  color: rgba(59, 130, 246, 0.8);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.music-toggle.playing:hover {
+  color: rgba(59, 130, 246, 1);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.music-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* CENTER - 3x bigger than orbiting dots (42px vs 14px), logo blue */
+.center {
+  position: absolute;
+  width: 42px;
+  height: 42px;
+  background: radial-gradient(circle, #3b82f6 0%, #1e40af 60%, #1e3a8a 100%);
+  border-radius: 50%;
+  animation: pulse 4s ease-in-out infinite;
+  box-shadow:
+    0 0 60px 15px rgba(59, 130, 246, 0.4),
+    0 0 100px 30px rgba(30, 64, 175, 0.25),
+    0 0 160px 60px rgba(30, 58, 138, 0.1);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow:
+      0 0 60px 15px rgba(59, 130, 246, 0.4),
+      0 0 100px 30px rgba(30, 64, 175, 0.25),
+      0 0 160px 60px rgba(30, 58, 138, 0.1);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow:
+      0 0 80px 20px rgba(59, 130, 246, 0.5),
+      0 0 120px 40px rgba(30, 64, 175, 0.3),
+      0 0 180px 70px rgba(30, 58, 138, 0.15);
+  }
+}
+
+/* Orbit item - drifts lazily, BIGGER radius */
+.item {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  cursor: pointer;
+  opacity: var(--opacity, 0.5);
+  transition: opacity 0.3s ease;
+  animation: drift 100s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+  z-index: 1;
+}
+
+.item.hovered,
+.item.expanded {
+  opacity: 1;
+  z-index: 10;
+}
+
+@keyframes drift {
+  0% {
+    transform:
+      rotate(calc(var(--angle) + 0deg))
+      translateX(var(--distance))
+      rotate(calc(-1 * (var(--angle) + 0deg)));
+  }
+  50% {
+    transform:
+      rotate(calc(var(--angle) + 180deg))
+      translateX(var(--distance))
+      rotate(calc(-1 * (var(--angle) + 180deg)));
+  }
+  100% {
+    transform:
+      rotate(calc(var(--angle) + 360deg))
+      translateX(var(--distance))
+      rotate(calc(-1 * (var(--angle) + 360deg)));
+  }
+}
+
+/* Item dot - base size 16px, grows with age via --size variable */
+/* Bioluminescent Teal/Cyan for default state */
+.dot {
+  position: relative;
+  width: var(--dot-size, 16px);
+  height: var(--dot-size, 16px);
+  background: linear-gradient(135deg, #4dd0e1 0%, #00e5ff 100%);
+  border-radius: 50%;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 16px rgba(0, 229, 255, 0.5);
+}
+
+/* Debris ring for aged items */
+.dot::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--ring-size, 0px);
+  height: var(--ring-size, 0px);
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  border-radius: 50%;
+  opacity: var(--ring-opacity, 0);
+  animation: ring-pulse 3s ease-in-out infinite;
+}
+
+.dot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(var(--ring-size, 0px) * 1.5);
+  height: calc(var(--ring-size, 0px) * 1.5);
+  transform: translate(-50%, -50%);
+  border: 1px dashed rgba(0, 229, 255, 0.15);
+  border-radius: 50%;
+  opacity: var(--ring-opacity, 0);
+  animation: ring-pulse 4s ease-in-out infinite reverse;
+}
+
+@keyframes ring-pulse {
+  0%, 100% { opacity: var(--ring-opacity, 0); transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: calc(var(--ring-opacity, 0) * 0.7); transform: translate(-50%, -50%) scale(1.1); }
+}
+
+.item.hovered .dot {
+  transform: scale(1.5);
+  box-shadow:
+    0 0 24px rgba(0, 229, 255, 0.7),
+    0 0 48px rgba(0, 229, 255, 0.3);
+}
+
+.item.expanded .dot {
+  transform: scale(1.4);
+  box-shadow:
+    0 0 30px rgba(0, 229, 255, 0.8),
+    0 0 60px rgba(0, 229, 255, 0.4);
+}
+
+/* Soft Starlight Gold for pinned items */
+.item.pinned .dot {
+  background: linear-gradient(135deg, #ffe082 0%, #ffd54f 100%);
+  box-shadow: 0 0 16px rgba(255, 213, 79, 0.5);
+}
+
+.item.pinned.hovered .dot,
+.item.pinned.expanded .dot {
+  box-shadow:
+    0 0 24px rgba(255, 213, 79, 0.7),
+    0 0 48px rgba(255, 213, 79, 0.3);
+}
+
+/* Label */
+.label {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 22px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.label.visible {
+  opacity: 1;
+}
+
+/* Action buttons */
+.actions {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 44px;
+  display: flex;
+  gap: 2px;
+  background: rgba(22, 27, 34, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.actions button {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.actions button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.actions button.active {
+  color: #fbbf24;
+}
+
+.actions button.danger:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
+.actions button svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Empty state */
+.empty {
+  position: absolute;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.2);
+  letter-spacing: 0.02em;
+}
+
+/* Input */
+.add {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.add input {
+  width: 280px;
+  padding: 14px 24px;
+  font-family: inherit;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  outline: none;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.add input::placeholder {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.add input:focus {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+/* Toast notification */
+.toast {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(22, 27, 34, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  animation: toastIn 0.3s ease;
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .item {
+    animation: none;
+    transform:
+      rotate(var(--angle))
+      translateX(var(--distance))
+      rotate(calc(-1 * var(--angle)));
+  }
+  .center {
+    animation: none;
+  }
+  .toast {
+    animation: none;
+  }
+}
+
+/* =============================================================================
+   ACCESSIBILITY
+   ============================================================================= */
+
+/* Focus styles for keyboard navigation */
+.item:focus-visible .dot,
+.item.keyboard-focused .dot {
+  outline: 2px solid #3b82f6;
+  outline-offset: 4px;
+  transform: scale(1.5);
+  box-shadow:
+    0 0 24px rgba(59, 130, 246, 0.7),
+    0 0 48px rgba(59, 130, 246, 0.3);
+}
+
+/* Make buttons focusable */
+.actions button:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.music-toggle:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 3px;
+}
+
+.place:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Skip link for keyboard users */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #3b82f6;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  z-index: 1000;
+  transition: top 0.2s;
+}
+
+.skip-link:focus {
+  top: 10px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .surface {
+    background: #000;
+  }
+
+  .dot {
+    border: 2px solid white;
+  }
+
+  .center {
+    border: 2px solid white;
+  }
+
+  .label {
+    background: #000;
+    border: 1px solid white;
+  }
+
+  .actions button {
+    background: #000;
+    border: 1px solid white;
+    color: white;
+  }
+}
+
+/* Screen reader only text */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* =============================================================================
+   MODE SELECTOR
+   ============================================================================= */
+
+.mode-selector {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  z-index: 100;
+}
+
+.mode-pills {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 4px;
+}
+
+.mode-pill {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.4);
+  background: transparent;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-transform: lowercase;
+  letter-spacing: 0.03em;
+}
+
+.mode-pill:hover {
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.mode-pill.active {
+  color: rgba(0, 229, 255, 0.9);
+  background: rgba(0, 229, 255, 0.1);
+}
+
+.mode-add-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 4px;
+}
+
+.mode-add-btn:hover {
+  color: rgba(0, 229, 255, 0.8);
+  border-color: rgba(0, 229, 255, 0.4);
+  background: rgba(0, 229, 255, 0.05);
+}
+
+.mode-add-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.mode-add-form {
+  display: flex;
+  align-items: center;
+}
+
+.mode-add-input {
+  width: 80px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-family: inherit;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  border-radius: 16px;
+  outline: none;
+  text-transform: lowercase;
+}
+
+.mode-add-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* =============================================================================
+   MODE TRANSITION ANIMATION
+   ============================================================================= */
+
+.surface.mode-transitioning {
+  animation: modeTransition 0.6s ease;
+}
+
+.surface.mode-transitioning .center {
+  animation: centerPulse 0.6s ease;
+}
+
+.surface.mode-transitioning .item {
+  animation: itemScatter 0.6s ease;
+}
+
+@keyframes modeTransition {
+  0% { background: #0d1117; }
+  30% { background: #0a0e14; }
+  50% { background: #0d1117; filter: brightness(1.2); }
+  100% { background: #0d1117; filter: brightness(1); }
+}
+
+@keyframes centerPulse {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.3); filter: brightness(1.5); }
+  60% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+@keyframes itemScatter {
+  0% { opacity: var(--opacity); }
+  30% { opacity: 0; transform: rotate(calc(var(--angle) + 0deg)) translateX(calc(var(--distance) * 1.5)) rotate(calc(-1 * (var(--angle) + 0deg))); }
+  60% { opacity: 0; }
+  100% { opacity: var(--opacity); }
+}
+
+/* =============================================================================
+   WALKTHROUGH OVERLAY
+   ============================================================================= */
+
+.walkthrough-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: walkthroughIn 0.5s ease;
+}
+
+.walkthrough-overlay.exiting {
+  animation: walkthroughOut 0.5s ease forwards;
+}
+
+@keyframes walkthroughIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes walkthroughOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.walkthrough-spotlight {
+  position: absolute;
+  border-radius: 50%;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7);
+  transition: all 0.5s ease;
+  pointer-events: none;
+}
+
+.spotlight-center {
+  width: 100px;
+  height: 100px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.spotlight-input {
+  width: 340px;
+  height: 80px;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 20px;
+}
+
+.spotlight-orbit {
+  width: 500px;
+  height: 500px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.spotlight-modes {
+  width: 200px;
+  height: 60px;
+  top: 14px;
+  left: 14px;
+  border-radius: 30px;
+}
+
+.spotlight-actions {
+  width: 200px;
+  height: 60px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 40px);
+  border-radius: 12px;
+}
+
+.spotlight-music {
+  width: 60px;
+  height: 60px;
+  bottom: 14px;
+  right: 14px;
+}
+
+.walkthrough-card {
+  position: relative;
+  background: rgba(22, 27, 34, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 32px 40px;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: cardFloat 0.5s ease;
+}
+
+@keyframes cardFloat {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.walkthrough-progress {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.walkthrough-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.walkthrough-dot.active {
+  background: #00e5ff;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.5);
+}
+
+.walkthrough-dot.complete {
+  background: rgba(0, 229, 255, 0.5);
+}
+
+.walkthrough-content {
+  margin-bottom: 28px;
+}
+
+.walkthrough-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0 0 12px 0;
+}
+
+.walkthrough-description {
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+.walkthrough-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.walkthrough-skip {
+  font-size: 13px;
+  font-family: inherit;
+  color: rgba(255, 255, 255, 0.4);
+  background: transparent;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.walkthrough-skip:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.walkthrough-next {
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  color: #0d1117;
+  background: #00e5ff;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.walkthrough-next:hover {
+  background: #4dd0e1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 229, 255, 0.3);
+}
+
+.walkthrough-hint {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.25);
+  letter-spacing: 0.02em;
+}
+
+/* =============================================================================
+   DONE BUTTON STYLE
+   ============================================================================= */
+
+.actions button.done:hover {
+  background: rgba(0, 229, 255, 0.15);
+  color: #00e5ff;
+}
+
+/* =============================================================================
+   REMINDER ANIMATION
+   ============================================================================= */
+
+.item.reminder-pulse .dot {
+  animation: reminderPulse 1s ease infinite;
+}
+
+@keyframes reminderPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 16px rgba(0, 229, 255, 0.5);
+  }
+  50% {
+    transform: scale(1.3);
+    box-shadow: 0 0 30px rgba(0, 229, 255, 0.8), 0 0 60px rgba(0, 229, 255, 0.4);
+  }
+}
