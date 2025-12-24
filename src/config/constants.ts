@@ -79,16 +79,31 @@ export const ANIMATION = {
 
 export const AUDIO = {
   SOUNDS: {
-    hover: '/sounds/envato_sfxgen_Dec_23_2025_9_59_33.mp3',
-    click: '/sounds/envato_sfxgen_Dec_23_2025_10_01_03.mp3',
+    // Core SFX
+    newItem: '/sounds/17640 futuristic prompt-full.mp3',     // When submitting new item
+    modeSwitch: '/sounds/Futuristic Reveal.wav',             // When switching modes
+    markDone: '/sounds/Futuristic Feature Select.mp3',       // When marking item done
+    reminder: '/sounds/Futuristic Power Generation.wav',     // Reminder for old items
+    // Background
     ambient: '/sounds/Space Ambience.mp3',
   },
   VOLUMES: {
-    hover: 0.15,
-    click: 0.25,
-    ambient: 0.1,
+    newItem: 0.3,
+    modeSwitch: 0.25,
+    markDone: 0.3,
+    reminder: 0.2,
+    ambient: 0.08,
   },
-  DEBOUNCE_MS: 80,          // Debounce hover sounds
+  DEBOUNCE_MS: 80,
+  REMINDER_INTERVAL_MS: 3 * 60 * 60 * 1000, // 3 hours between reminders
+  REMINDER_AGE_HOURS: 4,                     // Items older than 4 hours trigger reminders
+  // 8D/Immersive audio settings
+  IMMERSIVE: {
+    PAN_SPEED: 0.0005,        // How fast the sound moves around
+    PAN_RANGE: 0.8,           // -0.8 to 0.8 stereo panning
+    FILTER_FREQ: 800,         // Low-pass filter frequency
+    FILTER_Q: 1.5,            // Filter resonance
+  },
 };
 
 // =============================================================================
@@ -99,6 +114,10 @@ export const STORAGE_KEYS = {
   ITEMS: 'orbit_items',
   CONTEXT: 'orbit_context',
   MUSIC_PREF: 'orbit_music',
+  MODES: 'orbit_modes',
+  CURRENT_MODE: 'orbit_current_mode',
+  FIRST_RUN: 'orbit_first_run',
+  LAST_REMINDER: 'orbit_last_reminder',
 };
 
 // =============================================================================
