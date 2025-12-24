@@ -5,7 +5,7 @@
   "scripts": {
     "start": "webpack serve --open --mode development",
     "build": "webpack --mode production",
-    "build:extension": "webpack --mode production && cp -r dist/* extension/",
+  "build:extension": "npm run build && cp -r dist extension && cp extension-manifest.json extension/manifest.json",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
