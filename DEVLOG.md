@@ -320,4 +320,4 @@ Pattern learning uses EMA (Exponential Moving Average):
 
 ---
 
-*Last updated: December 2024*
+*Last updated: 23 December 2025*
