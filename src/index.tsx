@@ -2,6 +2,8 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import './styles.css';
+import { initializeServiceWorker } from './services/serviceWorker';
+
 
 const container = document.getElementById('root');
 if (!container) {
@@ -10,3 +12,6 @@ if (!container) {
 
 const root = createRoot(container);
 root.render(<App />);
+
+// Register service worker for PWA support
+initializeServiceWorker();

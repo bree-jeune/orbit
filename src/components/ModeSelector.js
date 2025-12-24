@@ -81,7 +81,7 @@ export default function ModeSelector({ currentMode, onModeChange, onModeSwitch }
     setModes(newModes);
     saveModes(newModes);
     setLongPressMode(null);
-
+    
     // Switch to first mode if deleting current
     if (mode === currentMode) {
       onModeSwitch?.();
