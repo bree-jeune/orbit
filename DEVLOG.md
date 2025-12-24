@@ -1,6 +1,6 @@
 # Orbit Development Log
 
-> A context-aware attention surface — "what if Obsidian and NotebookLLM had a baby"
+> A context-aware attention surface
 
 ---
 
