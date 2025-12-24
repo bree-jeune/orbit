@@ -16,12 +16,8 @@
   position: relative;
 }
 
-/* Branding */
+/* Branding - integrated with mode selector */
 .brand {
-  position: fixed;
-  top: 24px;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -30,6 +26,9 @@
   color: rgba(255, 255, 255, 0.4);
   letter-spacing: 0.1em;
   text-transform: lowercase;
+  padding-right: 12px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  margin-right: 8px;
 }
 
 .brand-icon {
@@ -39,6 +38,7 @@
   border-radius: 50%;
   box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
 }
+
 
 /* Context toggle */
 .place {
@@ -511,6 +511,8 @@
   top: 24px;
   left: 24px;
   z-index: 100;
+  display: flex;
+  align-items: center;
 }
 
 .mode-pills {
@@ -862,3 +864,4 @@
     box-shadow: 0 0 30px rgba(0, 229, 255, 0.8), 0 0 60px rgba(0, 229, 255, 0.4);
   }
 }
+
