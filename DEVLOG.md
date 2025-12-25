@@ -46,7 +46,6 @@ orbit/
 │   │   ├── types.ts               # TypeScript type definitions
 │   │   ├── score.js               # Contextual scoring algorithm
 │   │   ├── rank.js                # Item ranking and selection
-│   │   ├── storage.js             # localStorage persistence
 │   │   ├── stateMachine.ts        # Item lifecycle states
 │   │   ├── histogramUtils.ts      # Pattern learning compression
 │   │   └── __tests__/             # 44 unit tests
@@ -55,6 +54,7 @@ orbit/
 │   │   └── useKeyboardNav.ts      # Accessibility navigation
 │   ├── services/
 │   │   ├── indexedDB.ts           # IndexedDB with fallback
+│   │   ├── storage.js             # localStorage persistence
 │   │   └── serviceWorker.ts       # Offline support
 │   ├── store/
 │   │   └── orbitStore.js          # State management
