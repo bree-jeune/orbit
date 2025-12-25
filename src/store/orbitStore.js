@@ -6,7 +6,6 @@
  */
 
 import { createItem, getCurrentContext } from '../engine/types.js';
-import { STORAGE_KEYS } from '../config/constants';
 import { rankItems, recordInteraction, pinItem, unpinItem, quietItem } from '../engine/rank.js';
 import { getAllItems, saveAllItems, addItem as storageAddItem, updateItem, removeItem, migrateToEncrypted } from '../services/storage.js';
 import { STORAGE_KEYS } from '../config/constants';
