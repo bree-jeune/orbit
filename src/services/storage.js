@@ -2,7 +2,7 @@
  * Orbit Storage Service
  *
  * Local storage with optional encryption via Web Crypto API.
- * Backwards compatible with unencrypted data.
+ * Backward compatible with unencrypted data.
  */
 
 import { STORAGE_KEYS, ITEM_DEFAULTS } from '../config/constants';
