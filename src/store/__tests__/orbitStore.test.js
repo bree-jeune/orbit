@@ -1,5 +1,6 @@
 import { setPlace } from '../orbitStore';
 import { getCurrentContext } from '../../engine/types';
+import { STORAGE_KEYS } from '../../config/constants';
 
 function createStorageMock() {
   let store = {};
@@ -36,5 +37,6 @@ describe('orbitStore setPlace', () => {
     const context = getCurrentContext();
 
     expect(context.place).toBe('work');
+    expect(localStorage.setItem).toHaveBeenCalledWith(STORAGE_KEYS.CONTEXT, 'work');
   });
 });
