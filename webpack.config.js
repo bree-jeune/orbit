@@ -1,6 +1,8 @@
 const path = require("path");
+const fs = require("fs");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const Dotenv = require('dotenv-webpack');
 
 
 module.exports = {
@@ -56,6 +58,11 @@ module.exports = {
           },
         },
       ],
+    }),
+    new Dotenv({
+      path: path.resolve(__dirname, fs.existsSync('.env.local') ? '.env.local' : '.env'),
+      systemvars: true,
+      silent: true,
     }),
   ],
   resolve: {
