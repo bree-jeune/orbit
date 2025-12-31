@@ -52,11 +52,11 @@ function notify() {
 function migratePlaceKey() {
   const oldKey = 'orbit_place';
   const newKey = STORAGE_KEYS.CONTEXT;
-  
+
   // Check if we have the old key and not the new key
   const oldValue = localStorage.getItem(oldKey);
   const newValue = localStorage.getItem(newKey);
-  
+
   if (oldValue && !newValue) {
     localStorage.setItem(newKey, oldValue);
     localStorage.removeItem(oldKey);
@@ -153,6 +153,14 @@ export async function markSeen(id) {
 
   await updateItem(id, updated);
   await recompute();
+}
+
+/**
+ * Boost an item (bring it back to mind)
+ * @param {string} id
+ */
+export async function boostItem(id) {
+  return markSeen(id);
 }
 
 /**

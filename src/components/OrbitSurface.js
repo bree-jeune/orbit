@@ -57,10 +57,11 @@ export default function OrbitSurface() {
       console.log('[Orbit] Using environment API key');
       return envKey;
     }
-    console.log('[Orbit] Using default API key');
-    return AI_CONFIG.DEFAULT_KEY || '';
+    return '';
   });
   const reminderTimeoutRef = useRef(null);
+  const transitionTimeoutRef1 = useRef(null);
+  const transitionTimeoutRef2 = useRef(null);
   const lastReminderRef = useRef(null);
 
   const {
@@ -182,18 +183,31 @@ export default function OrbitSurface() {
   }, []);
 
   const handleModeChange = useCallback((newMode) => {
+    // Clear any pending transition timeouts
+    if (transitionTimeoutRef1.current) clearTimeout(transitionTimeoutRef1.current);
+    if (transitionTimeoutRef2.current) clearTimeout(transitionTimeoutRef2.current);
+
     // Trigger dramatic transition
     setTransitionClass('mode-transitioning');
-    setTimeout(() => {
+
+    // Play sound immediately
+    playModeSwitch();
+
+    transitionTimeoutRef1.current = setTimeout(() => {
       setPlace(newMode);
-      setTimeout(() => setTransitionClass(''), 600);
-    }, 300);
-  }, []);
+      // Stay in "warp" slightly longer for visual impact
+      transitionTimeoutRef2.current = setTimeout(() => {
+        setTransitionClass('');
+        transitionTimeoutRef2.current = null;
+      }, 800);
+      transitionTimeoutRef1.current = null;
+    }, 400);
+  }, [playModeSwitch]);
 
   const handleUpdateAiKey = useCallback((key) => {
     localStorage.setItem('orbit_ai_key', key);
     setAiKey(key);
-    showToast('AI Key updated');
+    showToast('Key saved. Magic enabled.');
   }, [showToast]);
 
   const handleClearData = useCallback(() => {
@@ -212,7 +226,7 @@ export default function OrbitSurface() {
     remove(itemId);
     playMarkDone();
     setExpandedId(null);
-    showToast('Marked done');
+    showToast('Got it! Marked as done.');
   }, [playMarkDone]);
 
   const showToast = useCallback((message) => {
@@ -275,7 +289,7 @@ export default function OrbitSurface() {
 
   return (
     <div
-      className={`surface ${transitionClass}`}
+      className={`surface ${transitionClass} ${showVault || showSettings ? 'modal-open' : ''}`}
       onClick={() => setExpandedId(null)}
       style={{
         background: theme ? theme.visual.background : undefined,
@@ -315,7 +329,7 @@ export default function OrbitSurface() {
         <button
           className="settings-btn"
           onClick={(e) => { e.stopPropagation(); setShowVault(true); }}
-          title="Open Vault"
+          title="Open Library"
         >
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
@@ -324,7 +338,7 @@ export default function OrbitSurface() {
         <button
           className="settings-btn"
           onClick={(e) => { e.stopPropagation(); setShowSettings(true); }}
-          title="Settings"
+          title="Personalize"
         >
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="3" />
@@ -356,7 +370,7 @@ export default function OrbitSurface() {
           onQuiet={() => {
             quiet(item.id, 4);
             setExpandedId(null);
-            showToast('Quieted for 4 hours');
+            showToast('Resting for 4 hours');
           }}
           onPin={() => {
             item.signals.isPinned ? unpin(item.id) : pin(item.id);
@@ -368,9 +382,8 @@ export default function OrbitSurface() {
         />
       ))}
 
-      {/* Empty state */}
       {visibleItems.length === 0 && !showWalkthrough && (
-        <div className="empty">what's on your mind?</div>
+        <div className="empty">nothing here right now. take a breath.</div>
       )}
 
       {/* Input */}

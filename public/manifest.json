@@ -1,47 +1,22 @@
-{ 
-  "name": "Orbit",
+{
+  "manifest_version": 3,
+  "name": "Orbit - A Living Space for Attention",
   "short_name": "Orbit",
-  "description": "Contextual task prioritization",
-  "start_url": "/",
-  "display": "standalone",
-  "display_override": ["window-controls-overlay"],
-  "orientation": "any",
-  "background_color": "#1e40af",
-  "theme_color": "#1e40af",
-  "icons": [
-    {
-      "src": "/icons/192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/icons/512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+  "version": "1.0.0",
+  "description": "An easier way to remember what matters right now.",
+  "icons": {
+    "16": "icons/16.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png",
+    "512": "icons/512.png"
+  },
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "permissions": [
+    "storage"
   ],
-  "screenshots": [
-    {
-      "src": "/icons/512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Orbit App"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Open Orbit",
-      "url": "/",
-      "icons": [{ "src": "/icons/192.png", "sizes": "192x192" }]
-    }
-  ],
-  "protocol_handlers": [
-    {
-      "protocol": "web+orbit",
-      "url": "/?item=%s"
-    }
-  ]
+  "action": {
+    "default_title": "Orbit"
+  }
 }

@@ -10,33 +10,33 @@ import { STORAGE_KEYS } from '../config/constants';
 
 const STEPS = [
   {
-    title: 'Welcome to Orbit',
-    description: 'Your context-aware attention surface. Things that matter float to you at the right time.',
+    title: 'Welcome home',
+    description: "Orbit is your gentle space for focus. It helps you keep track of what's important, without the noise.",
     highlight: 'center',
   },
   {
-    title: 'Add Items',
-    description: 'Press / or click the input to add things to your orbit. Tasks, ideas, reminders—anything.',
+    title: 'Clear your mind',
+    description: "Add tasks, ideas, or reminders—anything you don't want to forget. Just press / or click the input.",
     highlight: 'input',
   },
   {
-    title: 'Smart Surfacing',
-    description: 'Items orbit closer based on context—time of day, location, patterns. The most relevant rise to the surface.',
+    title: 'Right place, right time',
+    description: "Your tasks drift closer when they're relevant to where you are and what you're doing.",
     highlight: 'orbit',
   },
   {
-    title: 'Switch Modes',
-    description: 'Toggle between home, work, or create custom modes. Items know where they belong.',
+    title: 'Separate your spaces',
+    description: "Keep work and home distinct. Orbit remembers where everything belongs so you can stay in the zone.",
     highlight: 'modes',
   },
   {
-    title: 'Take Action',
-    description: 'Click any item to expand options: mark done, quiet temporarily, pin to keep visible, or remove.',
+    title: 'Control the flow',
+    description: "Click any item to mark it done, snooze it for later, or pin what's critical.",
     highlight: 'actions',
   },
   {
-    title: 'Immerse Yourself',
-    description: 'Enable ambient audio for a focused, spatial experience. Your orbit breathes with you.',
+    title: 'Find your focus',
+    description: "Turn on ambient sounds to create a calm space for deep work. Your orbit breathes with you.",
     highlight: 'music',
   },
 ];

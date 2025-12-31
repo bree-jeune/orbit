@@ -1,18 +1,22 @@
 {
   "manifest_version": 3,
-  "name": "Orbit",
+  "name": "Orbit - A Living Space for Attention",
   "short_name": "Orbit",
   "version": "1.0.0",
-  "description": "Contextual task prioritization",
+  "description": "An easier way to remember what matters right now. ",
   "icons": {
-    "16": "https://res.cloudinary.com/dkdxt6f6x/image/upload/v1767191957/favicon-96x96_mnnegs.png",
-    "48": "https://res.cloudinary.com/dkdxt6f6x/image/upload/v1767191958/web-app-manifest-192x192_nb0vex.png",
-    "128": "https://res.cloudinary.com/dkdxt6f6x/image/upload/v1767191958/web-app-manifest-512x512_gi0zej.png"
+    "16": "icons/16.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png",
+    "512": "icons/512.png"
   },
   "chrome_url_overrides": {
     "newtab": "index.html"
   },
   "permissions": [
     "storage"
-  ]
+  ],
+  "action": {
+    "default_title": "Orbit"
+  }
 }

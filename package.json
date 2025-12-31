@@ -5,7 +5,8 @@
   "scripts": {
     "start": "webpack serve --open --mode development",
     "build": "webpack --mode production",
-    "build:extension": "npm run build && cp -r dist extension && cp extension-manifest.json extension/manifest.json",
+    "build:extension": "npm run build && rm -rf extension && mkdir -p extension && cp -r dist/* extension/ && cp manifest.json extension/manifest.json && cp -r icons extension/",
+    "build:zip": "npm run build:extension && cd extension && zip -r ../orbit.zip ./*",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"

@@ -4,7 +4,6 @@ import { OrbitItem } from '../engine/types';
 export const AI_CONFIG = {
     MODEL: 'gemini-1.5-flash',
     API_URL: 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent',
-    DEFAULT_KEY: 'AIzaSyBbQ1gLgv6-Wj-jLgPTXzF1MrPYzuRfYMo',
 };
 
 export interface AIParsedResult {

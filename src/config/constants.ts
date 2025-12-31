@@ -43,16 +43,16 @@ export const ITEM_DEFAULTS = {
 // =============================================================================
 
 export const PLANET_SIZES = {
-  CENTER: 42,               // Center planet diameter (px)
-  DOT_MIN: 16,              // Orbiting dot minimum size (px)
-  DOT_MAX: 24,              // Orbiting dot maximum size after growth (px)
+  CENTER: 80,               // Center planet diameter (px) - SCALED UP
+  DOT_MIN: 18,              // Orbiting dot minimum size (px)
+  DOT_MAX: 28,              // Orbiting dot maximum size after growth (px)
   DOT_GROWTH_DAYS: 7,       // Days to reach max size
 };
 
 export const ORBIT_RADII = {
-  MIN_DISTANCE: 140,        // Closest orbit distance from center (px)
-  MAX_DISTANCE: 240,        // Farthest orbit distance from center (px)
-  DISTANCE_RANGE: 100,      // Range = MAX - MIN (calculated for convenience)
+  MIN_DISTANCE: 180,        // Closest orbit distance from center (px)
+  MAX_DISTANCE: 320,        // Farthest orbit distance from center (px)
+  DISTANCE_RANGE: 140,      // Range = MAX - MIN
 };
 
 export const DEBRIS_RINGS = {
@@ -107,7 +107,7 @@ export const AUDIO = {
   DEBOUNCE_MS: 80,
   REMINDER_INTERVAL_MS: 3 * 60 * 60 * 1000, // 3 hours between reminders
   REMINDER_AGE_HOURS: 4,                     // Items older than 4 hours trigger reminders
-  VERIFY_INTEGRITY: true,                    // Enable file integrity checks
+  VERIFY_INTEGRITY: false,                    // Enable file integrity checks
   // 8D/Immersive audio settings
   IMMERSIVE: {
     PAN_SPEED: 0.0005,        // How fast the sound moves around

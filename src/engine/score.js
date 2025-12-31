@@ -20,6 +20,11 @@ export function computeRelevance(item, context) {
   const reasons = [];
   let score = 0;
 
+  // Novelty - new items get a brief boost
+  const noveltyScore = computeNoveltyBoost(item, context);
+  score += noveltyScore * WEIGHTS.NOVELTY;
+  if (noveltyScore > 0.5) reasons.push('newly added');
+
   // Time affinity - does this item historically appear at this hour/day?
   const timeScore = computeTimeAffinity(item, context);
   score += timeScore * WEIGHTS.TIME;
@@ -28,22 +33,23 @@ export function computeRelevance(item, context) {
   // Place affinity - does this item belong here?
   const placeScore = computePlaceAffinity(item, context);
   score += placeScore * WEIGHTS.PLACE;
-  if (placeScore > 0.5) reasons.push(`often seen at ${context.place}`);
+  if (placeScore > 0.6) reasons.push(`often seen at ${context.place}`);
 
   // Device affinity - desktop vs mobile context
   const deviceScore = computeDeviceAffinity(item, context);
   score += deviceScore * WEIGHTS.DEVICE;
-  if (deviceScore > 0.5) reasons.push(`fits ${context.device} context`);
+  if (deviceScore > 0.6) reasons.push(`fits ${context.device} context`);
 
   // Recency boost - recently interacted items stay closer
   const recencyScore = computeRecencyBoost(item, context);
   score += recencyScore * WEIGHTS.RECENCY;
-  if (recencyScore > 0.7) reasons.push('recently on your mind');
+  // Deduplicate: hide recency if novelty is already explaining the presence
+  if (recencyScore > 0.7 && noveltyScore < 0.8) reasons.push('recently on your mind');
 
   // Frequency boost - often accessed items matter
   const frequencyScore = computeFrequencyBoost(item);
   score += frequencyScore * WEIGHTS.FREQUENCY;
-  if (frequencyScore > 0.5) reasons.push('frequently accessed');
+  if (frequencyScore > 0.6) reasons.push('frequently accessed');
 
   // Pinned items get a boost
   if (item.signals.isPinned) {
@@ -51,19 +57,14 @@ export function computeRelevance(item, context) {
       new Date(item.signals.pinUntil) > new Date(context.now);
     if (pinValid) {
       score += WEIGHTS.PINNED;
-      reasons.push('pinned');
+      reasons.push('kept close');
     }
   }
-
-  // Novelty - new items get a brief boost
-  const noveltyScore = computeNoveltyBoost(item, context);
-  score += noveltyScore * WEIGHTS.NOVELTY;
-  if (noveltyScore > 0.5) reasons.push('newly added');
 
   // Decay - ignored items drift away
   const decay = computeDecay(item, context);
   score *= (1 - decay);
-  if (decay > 0.3) reasons.push('fading from focus');
+  if (decay > 0.4) reasons.push('fading from focus');
 
   // Quiet - temporarily suppress items
   if (item.signals.quietUntil) {
@@ -72,7 +73,7 @@ export function computeRelevance(item, context) {
     if (now < quietUntil) {
       // Item is quieted - heavily suppress score
       score *= 0.1;
-      reasons.push('quieted');
+      reasons.push('resting');
     }
   }
 
@@ -109,6 +110,10 @@ function computePlaceAffinity(item, context) {
   const { placeHistogram = {} } = item.signals;
   const placeCount = placeHistogram[context.place] || 0;
   const total = Object.values(placeHistogram).reduce((a, b) => a + b, 0);
+
+  // Threshold: don't claim high affinity until we've seen enough interactions
+  if (total < 3) return 0;
+
   return total > 0 ? placeCount / total : 0;
 }
 

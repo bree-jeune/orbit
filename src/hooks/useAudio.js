@@ -108,9 +108,63 @@ export function useAudio() {
   const panPhaseRef = useRef(0);
 
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+  const [noiseType, setNoiseType] = useState('ambient');
   const [audioReady, setAudioReady] = useState(false);
   const ambientLoaded = useRef(false);
   const ambientVerified = useRef(false);
+
+  // Noise buffers cache
+  const noiseBuffersRef = useRef({
+    white: null,
+    pink: null,
+    brown: null
+  });
+  const noiseSourceRef = useRef(null);
+
+  // Generate procedural noise buffers
+  const generateNoiseBuffers = useCallback((ctx) => {
+    const sampleRate = ctx.sampleRate;
+    const duration = 5; // 5 seconds loop
+    const length = duration * sampleRate;
+
+    const generators = {
+      white: () => Math.random() * 2 - 1,
+      pink: (() => {
+        let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+        return () => {
+          const white = Math.random() * 2 - 1;
+          b0 = 0.99886 * b0 + white * 0.0555179;
+          b1 = 0.99332 * b1 + white * 0.0750759;
+          b2 = 0.96900 * b2 + white * 0.1538520;
+          b3 = 0.86650 * b3 + white * 0.3104856;
+          b4 = 0.55000 * b4 + white * 0.5329522;
+          b5 = -0.7616 * b5 - white * 0.0168980;
+          const out = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
+          b6 = white * 0.115926;
+          return out;
+        };
+      })(),
+      brown: (() => {
+        let lastOut = 0.0;
+        return () => {
+          const white = Math.random() * 2 - 1;
+          const out = (lastOut + (0.02 * white)) / 1.02;
+          lastOut = out;
+          return out * 3.5;
+        };
+      })()
+    };
+
+    ['white', 'pink', 'brown'].forEach(type => {
+      const buffer = ctx.createBuffer(2, length, sampleRate);
+      for (let c = 0; c < 2; c++) {
+        const data = buffer.getChannelData(c);
+        const gen = generators[type];
+        for (let i = 0; i < length; i++) data[i] = gen();
+      }
+      noiseBuffersRef.current[type] = buffer;
+    });
+  }, []);
 
   // Initialize SFX audio elements with integrity verification
   useEffect(() => {
@@ -132,8 +186,11 @@ export function useAudio() {
 
       // Check if ambient should auto-play
       const musicPref = localStorage.getItem(STORAGE_KEYS.MUSIC_PREF);
+      const savedNoise = localStorage.getItem('orbit_noise_type') || 'ambient';
+      setNoiseType(savedNoise);
+
       if (musicPref === 'on') {
-        loadAndPlayAmbient();
+        loadAndPlayAmbient(savedNoise);
       }
     }
 
@@ -175,6 +232,9 @@ export function useAudio() {
     pannerRef.current.connect(ambientGainRef.current);
     ambientGainRef.current.connect(ctx.destination);
 
+    // Initial noise generation
+    generateNoiseBuffers(ctx);
+
     // Verify ambient audio integrity before loading
     if (AUDIO.VERIFY_INTEGRITY && !ambientVerified.current) {
       const isValid = await verifyAudioFile(AUDIO.SOUNDS.ambient, AUDIO.HASHES?.ambient);
@@ -185,7 +245,7 @@ export function useAudio() {
       ambientVerified.current = true;
     }
 
-    // Load ambient audio buffer
+    // Load ambient audio buffer (Space Ambience)
     try {
       const response = await fetch(AUDIO.SOUNDS.ambient);
       const arrayBuffer = await response.arrayBuffer();
@@ -194,7 +254,7 @@ export function useAudio() {
     } catch (e) {
       console.warn('Failed to load ambient audio:', e);
     }
-  }, []);
+  }, [generateNoiseBuffers]);
 
   // Animate 8D panning effect
   const animatePanning = useCallback(() => {
@@ -224,38 +284,52 @@ export function useAudio() {
   }, [isMusicPlaying, animatePanning]);
 
   // Load and play ambient with immersive effect
-  const loadAndPlayAmbient = useCallback(async () => {
+  const loadAndPlayAmbient = useCallback(async (typeOverride) => {
     await initAudioContext();
-
-    if (!ambientBufferRef.current) {
-      // Fallback: wait a bit and retry
-      setTimeout(() => loadAndPlayAmbient(), 500);
-      return;
-    }
+    const type = typeOverride || noiseType;
 
     const ctx = audioContextRef.current;
     if (ctx.state === 'suspended') {
       await ctx.resume();
     }
 
-    // Create new source (sources can only be played once)
-    ambientSourceRef.current = ctx.createBufferSource();
-    ambientSourceRef.current.buffer = ambientBufferRef.current;
-    ambientSourceRef.current.loop = true;
-    ambientSourceRef.current.connect(filterRef.current);
-    ambientSourceRef.current.start();
+    // Stop existing sources
+    if (ambientSourceRef.current) ambientSourceRef.current.stop();
+    if (noiseSourceRef.current) noiseSourceRef.current.stop();
+
+    if (type === 'ambient') {
+      if (!ambientBufferRef.current) {
+        console.warn('[Audio] Ambient buffer not ready, retrying...');
+        setTimeout(() => loadAndPlayAmbient('ambient'), 1000);
+        return;
+      }
+      ambientSourceRef.current = ctx.createBufferSource();
+      ambientSourceRef.current.buffer = ambientBufferRef.current;
+      ambientSourceRef.current.loop = true;
+      ambientSourceRef.current.connect(filterRef.current);
+      ambientSourceRef.current.start();
+    } else {
+      const buffer = noiseBuffersRef.current[type.replace('Noise', '').toLowerCase()];
+      if (buffer) {
+        noiseSourceRef.current = ctx.createBufferSource();
+        noiseSourceRef.current.buffer = buffer;
+        noiseSourceRef.current.loop = true;
+        noiseSourceRef.current.connect(filterRef.current); // Use same filter/panner/gain chain
+        noiseSourceRef.current.start();
+      }
+    }
 
     setIsMusicPlaying(true);
-  }, [initAudioContext]);
+  }, [initAudioContext, noiseType]);
 
   const stopAmbient = useCallback(() => {
     if (ambientSourceRef.current) {
-      try {
-        ambientSourceRef.current.stop();
-      } catch (e) {
-        // Already stopped
-      }
+      try { ambientSourceRef.current.stop(); } catch (e) { }
       ambientSourceRef.current = null;
+    }
+    if (noiseSourceRef.current) {
+      try { noiseSourceRef.current.stop(); } catch (e) { }
+      noiseSourceRef.current = null;
     }
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
@@ -263,11 +337,19 @@ export function useAudio() {
     setIsMusicPlaying(false);
   }, []);
 
+  const switchNoise = useCallback((type) => {
+    setNoiseType(type);
+    localStorage.setItem('orbit_noise_type', type);
+    if (isMusicPlaying) {
+      loadAndPlayAmbient(type);
+    }
+  }, [isMusicPlaying, loadAndPlayAmbient]);
+
   // Play new item SFX
   const playNewItem = useCallback(() => {
     if (newItemRef.current) {
       newItemRef.current.currentTime = 0;
-      newItemRef.current.play().catch(() => {});
+      newItemRef.current.play().catch(() => { });
     }
   }, []);
 
@@ -275,7 +357,7 @@ export function useAudio() {
   const playModeSwitch = useCallback(() => {
     if (modeSwitchRef.current) {
       modeSwitchRef.current.currentTime = 0;
-      modeSwitchRef.current.play().catch(() => {});
+      modeSwitchRef.current.play().catch(() => { });
     }
   }, []);
 
@@ -283,7 +365,7 @@ export function useAudio() {
   const playMarkDone = useCallback(() => {
     if (markDoneRef.current) {
       markDoneRef.current.currentTime = 0;
-      markDoneRef.current.play().catch(() => {});
+      markDoneRef.current.play().catch(() => { });
     }
   }, []);
 
@@ -291,7 +373,7 @@ export function useAudio() {
   const playReminder = useCallback(() => {
     if (reminderRef.current) {
       reminderRef.current.currentTime = 0;
-      reminderRef.current.play().catch(() => {});
+      reminderRef.current.play().catch(() => { });
     }
   }, []);
 
@@ -313,6 +395,8 @@ export function useAudio() {
     playReminder,
     toggleMusic,
     isMusicPlaying,
+    switchNoise,
+    noiseType,
     audioReady,
   };
 }

@@ -31,7 +31,7 @@ export default function OrbitInput({ totalItems, onAdd, showToast, aiKey: propAi
     if (localKey && localKey !== 'undefined') return localKey;
     const envKey = process.env.GEMINI_API_KEY;
     if (envKey && envKey !== 'undefined') return envKey;
-    return AI_CONFIG.DEFAULT_KEY || '';
+    return '';
   });
 
   // Keep internal apiKey in sync with prop if prop changes
@@ -69,7 +69,7 @@ export default function OrbitInput({ totalItems, onAdd, showToast, aiKey: propAi
 
     // Prevent storage abuse
     if (totalItems >= ITEM_DEFAULTS.MAX_ITEMS) {
-      showToast('Orbit is full - remove some items');
+      showToast("Space is full. Let's clear some room.");
       return;
     }
 
@@ -116,9 +116,9 @@ export default function OrbitInput({ totalItems, onAdd, showToast, aiKey: propAi
 
   const showSuccessToast = (count) => {
     if (count >= ITEM_DEFAULTS.MAX_VISIBLE) {
-      showToast('Added to vault');
+      showToast('Moved to library');
     } else {
-      showToast('Added to orbit');
+      showToast('Added to your space');
     }
   };
 
@@ -135,7 +135,7 @@ export default function OrbitInput({ totalItems, onAdd, showToast, aiKey: propAi
             onChange={(e) => setInputValue(e.target.value)}
             onFocus={() => setInputFocused(true)}
             onBlur={() => setInputFocused(false)}
-            placeholder={isAiLoading ? "Processing..." : "(Add an item to orbit)"}
+            placeholder={isAiLoading ? "Processing..." : "(What's on your mind?)"}
             spellCheck={false}
             maxLength={ITEM_DEFAULTS.MAX_TITLE_LENGTH}
             autoComplete="off"
@@ -161,7 +161,7 @@ export default function OrbitInput({ totalItems, onAdd, showToast, aiKey: propAi
         <div className="modal-overlay" onClick={() => setShowApiKeyModal(false)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <h3>Enter Gemini API Key</h3>
-            <p>To use AI features, you need a Google Gemini API key. This will be stored locally in your browser.</p>
+            <p>To use AI features, you need a Google Gemini API key. Get one for free at <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-teal)', textDecoration: 'underline' }}>Gemini AI Studio</a>. This will be stored locally in your browser.</p>
             <input
               type="password"
               value={apiKey}

@@ -84,27 +84,42 @@ export default function OrbitItem({
 
       {/* Label - shows on hover */}
       <div className={`label ${hovered || isExpanded ? 'visible' : ''}`}>
-        {item.title}
+        <div className="label-title">{item.title}</div>
+        <div className="label-meta">
+          <span className="label-presence">{Math.round(item.computed.score * 100)}% Presence</span>
+          {item.signals.isPinned && <span className="label-badge kept">Kept</span>}
+          {item.signals.quietUntil && new Date(item.signals.quietUntil) > new Date() && (
+            <span className="label-badge resting">Resting</span>
+          )}
+        </div>
+        {/* Reasons for learning visibility */}
+        {(hovered || isExpanded) && item.computed.reasons?.length > 0 && (
+          <div className="label-reasons">
+            {item.computed.reasons.map((r, i) => (
+              <span key={i} className="label-reason">{r}</span>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Action buttons - show when expanded */}
       {isExpanded && (
         <div className="actions">
           <button onClick={(e) => { e.stopPropagation(); onDone?.(); }} title="Done" className="done">
-            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/></svg>
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z" /></svg>
           </button>
-          <button onClick={(e) => { e.stopPropagation(); onQuiet(); }} title="Later">
-            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zM1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0zm7-3.25v2.992l2.028.812a.75.75 0 01-.557 1.392l-2.5-1A.75.75 0 017 8.25v-3.5a.75.75 0 011.5 0z"/></svg>
+          <button onClick={(e) => { e.stopPropagation(); onQuiet(); }} title="Snooze">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zM1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0zm7-3.25v2.992l2.028.812a.75.75 0 01-.557 1.392l-2.5-1A.75.75 0 017 8.25v-3.5a.75.75 0 011.5 0z" /></svg>
           </button>
           <button
             onClick={(e) => { e.stopPropagation(); onPin(); }}
-            title={item.signals.isPinned ? 'Unpin' : 'Pin'}
+            title={item.signals.isPinned ? 'Stop keeping' : 'Keep close'}
             className={item.signals.isPinned ? 'active' : ''}
           >
-            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M4.456.734a1.75 1.75 0 012.826.504l.613 1.327a3.08 3.08 0 002.084 1.707l2.454.584c1.332.317 1.8 1.972.832 2.94L11.06 10l3.72 3.72a.75.75 0 11-1.06 1.06L10 11.06l-2.204 2.205c-.968.968-2.623.5-2.94-.832l-.584-2.454a3.08 3.08 0 00-1.707-2.084l-1.327-.613a1.75 1.75 0 01-.504-2.826L4.456.734z"/></svg>
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M4.456.734a1.75 1.75 0 012.826.504l.613 1.327a3.08 3.08 0 002.084 1.707l2.454.584c1.332.317 1.8 1.972.832 2.94L11.06 10l3.72 3.72a.75.75 0 11-1.06 1.06L10 11.06l-2.204 2.205c-.968.968-2.623.5-2.94-.832l-.584-2.454a3.08 3.08 0 00-1.707-2.084l-1.327-.613a1.75 1.75 0 01-.504-2.826L4.456.734z" /></svg>
           </button>
-          <button onClick={(e) => { e.stopPropagation(); onRemove(); }} title="Remove" className="danger">
-            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"/></svg>
+          <button onClick={(e) => { e.stopPropagation(); onRemove(); }} title="Forget" className="danger">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z" /></svg>
           </button>
         </div>
       )}

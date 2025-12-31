@@ -10,13 +10,13 @@ import './Vault.css';
 
 export default function Vault({ items, onClose, onPin, onUnpin, onRemove, onDone, onQuiet }) {
     const [search, setSearch] = useState('');
-    const [filter, setFilter] = useState('all'); // all, active, quieted, pinned
+    const [filter, setFilter] = useState('all'); // all, active, resting, kept
 
     const filteredItems = items.filter(item => {
         const matchesSearch = item.title.toLowerCase().includes(search.toLowerCase());
         if (filter === 'all') return matchesSearch;
-        if (filter === 'pinned') return matchesSearch && item.signals.isPinned;
-        if (filter === 'quieted') return matchesSearch && item.signals.quietUntil && new Date(item.signals.quietUntil) > new Date();
+        if (filter === 'kept') return matchesSearch && item.signals.isPinned;
+        if (filter === 'resting') return matchesSearch && item.signals.quietUntil && new Date(item.signals.quietUntil) > new Date();
         if (filter === 'active') return matchesSearch && !item.signals.isPinned && (!item.signals.quietUntil || new Date(item.signals.quietUntil) <= new Date());
         return matchesSearch;
     }).sort((a, b) => (b.computed?.score || 0) - (a.computed?.score || 0));
@@ -26,8 +26,8 @@ export default function Vault({ items, onClose, onPin, onUnpin, onRemove, onDone
             <div className="vault-card" onClick={(e) => e.stopPropagation()}>
                 <div className="vault-header">
                     <div className="vault-title-row">
-                        <h2>Orbit Vault</h2>
-                        <button className="close-btn" onClick={onClose} aria-label="Close vault">
+                        <h2>Your Library</h2>
+                        <button className="close-btn" onClick={onClose} aria-label="Close library">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <line x1="18" y1="6" x2="6" y2="18" />
                                 <line x1="6" y1="6" x2="18" y2="18" />
@@ -42,13 +42,13 @@ export default function Vault({ items, onClose, onPin, onUnpin, onRemove, onDone
                             </svg>
                             <input
                                 type="text"
-                                placeholder="Search your orbit..."
+                                placeholder="Search your library..."
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                             />
                         </div>
                         <div className="filter-pills">
-                            {['all', 'pinned', 'active', 'quieted'].map(f => (
+                            {['all', 'kept', 'active', 'resting'].map(f => (
                                 <button
                                     key={f}
                                     className={`filter-pill ${filter === f ? 'active' : ''}`}
@@ -64,7 +64,7 @@ export default function Vault({ items, onClose, onPin, onUnpin, onRemove, onDone
                 <div className="vault-list">
                     {filteredItems.length === 0 ? (
                         <div className="vault-empty">
-                            {search ? 'No items match your search' : 'Your vault is empty'}
+                            {search ? 'No items match your search' : 'Nothing here yet'}
                         </div>
                     ) : (
                         filteredItems.map(item => (
@@ -72,10 +72,10 @@ export default function Vault({ items, onClose, onPin, onUnpin, onRemove, onDone
                                 <div className="vault-item-info">
                                     <div className="vault-item-title">{item.title}</div>
                                     <div className="vault-item-meta">
-                                        <span className="relevance">Score: {Math.round((item.computed?.score || 0) * 100)}%</span>
-                                        {item.signals.isPinned && <span className="badge pinned">Pinned</span>}
+                                        <span className="relevance">Presence: {Math.round((item.computed?.score || 0) * 100)}%</span>
+                                        {item.signals.isPinned && <span className="badge kept">Kept</span>}
                                         {item.signals.quietUntil && new Date(item.signals.quietUntil) > new Date() && (
-                                            <span className="badge quiet">Quieted</span>
+                                            <span className="badge resting">Resting</span>
                                         )}
                                     </div>
                                 </div>
@@ -90,7 +90,7 @@ export default function Vault({ items, onClose, onPin, onUnpin, onRemove, onDone
                                     <button
                                         onClick={() => item.signals.isPinned ? onUnpin(item.id) : onPin(item.id)}
                                         className={`action-btn pin ${item.signals.isPinned ? 'active' : ''}`}
-                                        title={item.signals.isPinned ? "Unpin" : "Pin"}
+                                        title={item.signals.isPinned ? "Stop Keeping" : "Keep Close"}
                                     >
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
                                     </button>
@@ -108,7 +108,7 @@ export default function Vault({ items, onClose, onPin, onUnpin, onRemove, onDone
                 </div>
 
                 <div className="vault-footer">
-                    {items.length} total items in your personal gravity field
+                    {items.length} total items in your personal space
                 </div>
             </div>
         </div>

@@ -139,7 +139,7 @@
     border-color: var(--glass-border);
 }
 
-.vault-item.pinned {
+.vault-item.kept {
     background: rgba(255, 213, 79, 0.05);
     border-color: rgba(255, 213, 79, 0.2);
 }
@@ -177,12 +177,12 @@
     text-transform: uppercase;
 }
 
-.badge.pinned {
+.badge.kept {
     background: rgba(255, 213, 79, 0.1);
     color: var(--accent-gold);
 }
 
-.badge.quiet {
+.badge.resting {
     background: rgba(255, 255, 255, 0.1);
     color: var(--text-muted);
 }

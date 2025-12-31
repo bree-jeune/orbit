@@ -81,7 +81,7 @@ export default function ModeSelector({ currentMode, onModeChange, onModeSwitch }
     setModes(newModes);
     saveModes(newModes);
     setLongPressMode(null);
-    
+
     // Switch to first mode if deleting current
     if (mode === currentMode) {
       onModeSwitch?.();
@@ -127,7 +127,7 @@ export default function ModeSelector({ currentMode, onModeChange, onModeSwitch }
       onClick={(e) => e.stopPropagation()}
     >
       {/* Branding */}
-      <div className="brand">
+      <div className="brand" title="orbit - context-aware space">
         <div className="brand-icon" />
         <span>orbit</span>
       </div>
@@ -152,7 +152,7 @@ export default function ModeSelector({ currentMode, onModeChange, onModeSwitch }
               <button
                 className="mode-delete-btn"
                 onClick={(e) => handleDeleteMode(mode, e)}
-                aria-label={`Delete ${mode} mode`}
+                aria-label={`Delete ${mode} space`}
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <line x1="18" y1="6" x2="6" y2="18" />
@@ -163,7 +163,7 @@ export default function ModeSelector({ currentMode, onModeChange, onModeSwitch }
           </div>
         ))}
 
-        {/* Add mode button or input */}
+        {/* Add space button or input */}
         {isAdding ? (
           <form onSubmit={handleAddSubmit} className="mode-add-form">
             <input
@@ -173,7 +173,7 @@ export default function ModeSelector({ currentMode, onModeChange, onModeSwitch }
               onChange={(e) => setNewModeName(e.target.value)}
               onBlur={handleAddCancel}
               onKeyDown={handleKeyDown}
-              placeholder="mode"
+              placeholder="space name"
               className="mode-add-input"
               maxLength={12}
             />
@@ -182,7 +182,7 @@ export default function ModeSelector({ currentMode, onModeChange, onModeSwitch }
           <button
             className="mode-add-btn"
             onClick={handleAddClick}
-            aria-label="Add new mode"
+            aria-label="Add a new space"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="12" y1="5" x2="12" y2="19" />
